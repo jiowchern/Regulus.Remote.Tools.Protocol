@@ -1,0 +1,54 @@
+<Project>
+
+  <PropertyGroup>
+    <NuGetRegulusRemoteToolsProtocolFolder>$(MSBuildThisFileDirectory)..\tasks\netstandard2.0\</NuGetRegulusRemoteToolsProtocolFolder>
+    <!-- <NuGetRegulusRemoteToolsProtocolFolder>$(MSBuildThisFileDirectory)..\lib\netstandard2.0\</NuGetRegulusRemoteToolsProtocolFolder>-->
+
+
+  </PropertyGroup>
+  <UsingTask TaskName="Regulus.Remote.Tools.Protocol.FromCommonCodeGenerator" AssemblyFile="$(NuGetRegulusRemoteToolsProtocolFolder)Regulus.Remote.Tools.Protocol.dll" >
+
+  </UsingTask>
+
+  <ItemDefinitionGroup >
+    <RegulusProtocolOutputDir>
+      <ToolDir>$(MSBuildThisFileDirectory)../tools</ToolDir>
+      <InputFile>$(TargetPath)</InputFile>
+    </RegulusProtocolOutputDir>
+  </ItemDefinitionGroup>
+  <!-- <Target Name="mInputDir" BeforeTargets="Clean">
+    <Message Importance="High" Text="+++ $(OutDir) +++" />
+    <Message Importance="High" Text="+++ $(ProjectDir) +++" />
+    <Message Importance="High" Text="+++ $(TargetPath) +++" />
+  </Target>
+  <Target Name="mc" BeforeTargets="Compile">
+    <Message Importance="High" Text="+++ Compile +++" />
+  </Target>
+
+  <Target Name="mb" BeforeTargets="Build">
+    <Message Importance="High" Text="+++ Build +++" />
+  </Target>
+
+  <Target Name="mpb" BeforeTargets="PrepareForBuild">
+    <Message Importance="High" Text="+++ PrepareForBuild +++" />
+  </Target>
+  <Target Name="mrr" BeforeTargets="ResolveReferences">
+    <Message Importance="High" Text="+++ ResolveReferences +++" />
+  </Target>
+  <Target Name="mPrepareResources" BeforeTargets="PrepareResources">
+    <Message Importance="High" Text="+++ PrepareResources +++" />
+  </Target>
+  <Target Name="mPrepareResourceNames" BeforeTargets="PrepareResourceNames">
+    <Message Importance="High" Text="+++ PrepareResourceNames +++" />
+  </Target>
+  <Target Name="mInitializeBuildStatus" BeforeTargets="InitializeBuildStatus">
+    <Message Importance="High" Text="+++ InitializeBuildStatus +++" />
+  </Target>
+  <Target Name="mInitializeBuild" BeforeTargets="InitializeBuild">
+    <Message Importance="High" Text="+++ InitializeBuild +++" />
+  </Target>-->
+  
+  <Target Name="RegulusRemoteProtocol_Build" AfterTargets="PostBuildEvent" >    
+    <FromCommonCodeGenerator RegulusProtocol="@(RegulusProtocolOutputDir)"></FromCommonCodeGenerator>
+  </Target>
+</Project>

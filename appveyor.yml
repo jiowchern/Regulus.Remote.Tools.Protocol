@@ -1,0 +1,11 @@
+version: 0.1.9.{build}
+nuget:
+  project_feed: true
+build:
+  verbosity: minimal
+deploy:
+- provider: NuGet
+  api_key:
+    secure: EunKamGcsJ3kXIvrtT60bbQrXQtO8dhZV29AuDpKLls
+  on:
+    branch: release

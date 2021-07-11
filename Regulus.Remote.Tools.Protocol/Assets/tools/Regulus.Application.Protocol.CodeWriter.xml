@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Regulus.Application.Protocol.CodeWriter</name>
+    </assembly>
+    <members>
+        <member name="M:Regulus.Application.Protocol.TextWriter.Program.Main(System.IO.FileInfo,System.IO.DirectoryInfo)">
+            <summary>
+            
+            </summary>
+            <param name="common"></param>
+            <param name="output"></param>
+        </member>
+    </members>
+</doc>

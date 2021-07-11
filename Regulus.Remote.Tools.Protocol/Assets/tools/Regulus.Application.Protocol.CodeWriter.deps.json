@@ -1,0 +1,165 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v2.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v2.1": {
+      "Regulus.Application.Protocol.CodeWriter/0.1.9.1": {
+        "dependencies": {
+          "Regulus.Remote.Protocol": "0.1.9.1",
+          "System.CommandLine": "2.0.0-beta1.20253.1",
+          "System.CommandLine.DragonFruit": "0.3.0-alpha.20253.1",
+          "System.CommandLine.Rendering": "0.3.0-alpha.20253.1"
+        },
+        "runtime": {
+          "Regulus.Application.Protocol.CodeWriter.dll": {}
+        }
+      },
+      "Microsoft.CSharp/4.4.1": {},
+      "System.CommandLine/2.0.0-beta1.20253.1": {
+        "dependencies": {
+          "Microsoft.CSharp": "4.4.1",
+          "System.Memory": "4.5.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.CommandLine.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.20.25301"
+          }
+        }
+      },
+      "System.CommandLine.DragonFruit/0.3.0-alpha.20253.1": {
+        "dependencies": {
+          "System.CommandLine": "2.0.0-beta1.20253.1",
+          "System.CommandLine.Rendering": "0.3.0-alpha.20253.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.CommandLine.DragonFruit.dll": {
+            "assemblyVersion": "0.3.0.0",
+            "fileVersion": "0.300.20.25301"
+          }
+        }
+      },
+      "System.CommandLine.Rendering/0.3.0-alpha.20253.1": {
+        "dependencies": {
+          "System.CommandLine": "2.0.0-beta1.20253.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.CommandLine.Rendering.dll": {
+            "assemblyVersion": "0.3.0.0",
+            "fileVersion": "0.300.20.25301"
+          }
+        }
+      },
+      "System.Memory/4.5.3": {},
+      "Regulus.Network/0.1.9.1": {
+        "dependencies": {
+          "Regulus.Utility": "0.1.9.1"
+        },
+        "runtime": {
+          "Regulus.Network.dll": {}
+        }
+      },
+      "Regulus.Remote/0.1.9.1": {
+        "dependencies": {
+          "Regulus.Network": "0.1.9.1",
+          "Regulus.Utility": "0.1.9.1"
+        },
+        "runtime": {
+          "Regulus.Remote.dll": {}
+        }
+      },
+      "Regulus.Remote.Protocol/0.1.9.1": {
+        "dependencies": {
+          "Regulus.Remote": "0.1.9.1",
+          "Regulus.Serialization": "0.1.9.1"
+        },
+        "runtime": {
+          "Regulus.Remote.Protocol.dll": {}
+        }
+      },
+      "Regulus.Serialization/0.1.9.1": {
+        "dependencies": {
+          "Regulus.Utility": "0.1.9.1"
+        },
+        "runtime": {
+          "Regulus.Serialization.dll": {}
+        }
+      },
+      "Regulus.Utility/0.1.9.1": {
+        "runtime": {
+          "Regulus.Utility.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Regulus.Application.Protocol.CodeWriter/0.1.9.1": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.CSharp/4.4.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-A5hI3gk6WpcBI0QGZY6/d5CCaYUxJgi7iENn1uYEng+Olo8RfI5ReGVkjXjeu3VR3srLvVYREATXa2M0X7FYJA==",
+      "path": "microsoft.csharp/4.4.1",
+      "hashPath": "microsoft.csharp.4.4.1.nupkg.sha512"
+    },
+    "System.CommandLine/2.0.0-beta1.20253.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Ig+OUi1IXF3OX+S3e1+mjqK9J6ro0eoUokYRUbTjBGpL0lrgXxsBic66THXHD8K2Fb9c0Gk85ESzPgZ9Cz9Wvg==",
+      "path": "system.commandline/2.0.0-beta1.20253.1",
+      "hashPath": "system.commandline.2.0.0-beta1.20253.1.nupkg.sha512"
+    },
+    "System.CommandLine.DragonFruit/0.3.0-alpha.20253.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jiKygrVeTo+d3Tg5KjhgIZS7gO6g43ax/1BgkWza6ejTF9uCP24S0poYYcyYM26LHozzciRYGUQbsLoofg0iWw==",
+      "path": "system.commandline.dragonfruit/0.3.0-alpha.20253.1",
+      "hashPath": "system.commandline.dragonfruit.0.3.0-alpha.20253.1.nupkg.sha512"
+    },
+    "System.CommandLine.Rendering/0.3.0-alpha.20253.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Pgwk4TLhYO5VExmUUwbDbmJr2tqohDpt09+jnRNvroEq7n4MJoH0u9wBNj9a5rf0s+pE3nDUQsKceIfwbo/MWw==",
+      "path": "system.commandline.rendering/0.3.0-alpha.20253.1",
+      "hashPath": "system.commandline.rendering.0.3.0-alpha.20253.1.nupkg.sha512"
+    },
+    "System.Memory/4.5.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3oDzvc/zzetpTKWMShs1AADwZjQ/36HnsufHRPcOjyRAAMLDlu2iD33MBI2opxnezcVUtXyqDXXjoFMOU9c7SA==",
+      "path": "system.memory/4.5.3",
+      "hashPath": "system.memory.4.5.3.nupkg.sha512"
+    },
+    "Regulus.Network/0.1.9.1": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Regulus.Remote/0.1.9.1": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Regulus.Remote.Protocol/0.1.9.1": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Regulus.Serialization/0.1.9.1": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Regulus.Utility/0.1.9.1": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
