@@ -1,7 +1,15 @@
 version: 0.1.9.{build}
+branches:
+  only:
+  - release
+image: Visual Studio 2019
+configuration: Release
 nuget:
   project_feed: true
+before_build:
+- cmd: "cd %APPVEYOR_BUILD_FOLDER% \nnuget restore"
 build:
+  publish_nuget: true  
   verbosity: minimal
 deploy:
 - provider: NuGet
