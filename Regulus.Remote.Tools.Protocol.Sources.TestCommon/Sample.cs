@@ -2,6 +2,9 @@
 using System;
 using System.Linq;
 
+namespace Regulus.Remote
+{
+}
 namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
 {
     public class Sample : ISample , System.IDisposable

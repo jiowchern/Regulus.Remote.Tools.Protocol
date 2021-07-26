@@ -10,7 +10,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     {
         internal readonly string Name;
         internal readonly SyntaxTree Syntax;
-        
+        internal object Common;
+        internal object Protocol;
+        internal string[] Events;
 
         public GhostBuilder(InterfaceDeclarationSyntax soul, SemanticModel model)
         {

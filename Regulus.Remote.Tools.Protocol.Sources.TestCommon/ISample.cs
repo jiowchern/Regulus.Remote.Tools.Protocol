@@ -2,7 +2,18 @@
 
 namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
 {
-    
+    public struct StructA
+    {
+        public System.Guid Field1;
+        public int Num1;
+    }
+
+    public struct ClassA
+    {
+        public int[] Num1;
+    }
+
+
     public interface ISample
     {
 
