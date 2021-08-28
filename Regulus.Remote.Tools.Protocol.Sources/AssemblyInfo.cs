@@ -1,3 +1,3 @@
-﻿/*using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Regulus.Remote.Tools.Protocol.Sources.Tests")]*/
+[assembly: InternalsVisibleTo("Regulus.Remote.Tools.Protocol.Sources.Tests")]

@@ -1,7 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,15 +13,14 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
         private readonly List<ProtocoNewlBuilder> _Protocols;
         internal readonly System.Collections.Generic.IReadOnlyCollection<ProtocoNewlBuilder> Protocols;
-        /*private readonly List<MethodDeclarationSyntax> _Protocols;
-        internal readonly System.Collections.Generic.IReadOnlyCollection<GhostBuilder> Protocols;*/
 
-
+        private readonly System.Collections.Generic.HashSet<string> _SerializerTypes;
         public SyntaxReceiver()
         {
             _Ghosts = new List<GhostBuilder>();
             Ghosts = _Ghosts;
             _Protocols = new List<ProtocoNewlBuilder>();
+            _SerializerTypes = new HashSet<string>();
             Protocols = _Protocols;
         }
         
@@ -45,9 +43,15 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
                 // todo : 取得參數序列化
                 var args = method.ParameterList.Parameters;
-                foreach(var arg in args)
+                foreach(ParameterSyntax arg in args)
                 {
-
+                    var name = arg.Type.ToFullString();
+                    var syn2 = context.SemanticModel.GetDeclaredSymbol(arg.Type);
+                    var syn3 =context.SemanticModel.GetTypeInfo(arg.Type);
+                    var syn = context.SemanticModel.Compilation.GetTypeByMetadataName(name);
+                    var dec = new TypeDecomposer(arg);
+                    
+                    //_SerializerTypes.Add();
                 }
                 
             }

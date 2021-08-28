@@ -31,7 +31,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
         void ISourceGenerator.Initialize(GeneratorInitializationContext context)
         {
-            System.Diagnostics.Debugger.Launch();
+            //System.Diagnostics.Debugger.Launch();
             context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
             
         }
