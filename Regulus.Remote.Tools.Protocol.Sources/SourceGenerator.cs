@@ -16,15 +16,16 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             
             foreach(var g in receiver.Ghosts)
             {
-                var text = g.Syntax.GetText();
+                
+                var text = g.Syntax.GetRoot().NormalizeWhitespace().ToFullString();
                 context.AddSource(g.Name, text);
             }
-            var builder = new ProtocolBuilder(context.Compilation ,receiver.Ghosts);
+            /*var builder = new ProtocolBuilder(context.Compilation ,receiver.Ghosts);
             context.AddSource(builder.Name, builder.Build());
             foreach (var p in receiver.Protocols)
             {
 
-            }
+            }*/
         }
 
         

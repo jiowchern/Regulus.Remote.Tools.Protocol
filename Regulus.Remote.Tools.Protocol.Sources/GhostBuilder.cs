@@ -151,10 +151,10 @@ $@"
 
             method = method.WithBody(SyntaxFactory.Block(SyntaxFactory.ParseStatement(
 $@"
-{retValue}
-var info = typeof({symbol.ReceiverType}).GetMethod(""{method_declaration_syntax.Identifier}"");
-_CallMethodEvent(info , new object[] {{{string.Join(",", from p in pl select p.Identifier)}}} , {retRetValueVar});                    
-{retRetValue}
+    {retValue}
+        var info = typeof({symbol.ReceiverType}).GetMethod(""{method_declaration_syntax.Identifier}"");
+        _CallMethodEvent(info , new object[] {{{string.Join(",", from p in pl select p.Identifier)}}} , {retRetValueVar});                    
+    {retRetValue}
 ")));
 
             var text = method.GetText(System.Text.Encoding.UTF8).ToString();
