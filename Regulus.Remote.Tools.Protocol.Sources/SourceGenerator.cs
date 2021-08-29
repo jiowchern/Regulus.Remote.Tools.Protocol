@@ -9,16 +9,12 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     {
         void ISourceGenerator.Execute(GeneratorExecutionContext context)
         {
+            var builder = new GhostBuilder(context.Compilation.SyntaxTrees);
 
-            var receiver = context.SyntaxContextReceiver as SyntaxReceiver;
-            if (receiver == null)
-                return;
-            
-            foreach(var g in receiver.Ghosts)
+            foreach(var g in builder.Ghosts)
             {
-                
-                var text = g.Syntax.GetRoot().NormalizeWhitespace().ToFullString();
-                context.AddSource(g.Name, text);
+               
+                context.AddSource(g.FilePath, g.ToNormalizeWhitespace());
             }
             /*var builder = new ProtocolBuilder(context.Compilation ,receiver.Ghosts);
             context.AddSource(builder.Name, builder.Build());
@@ -33,7 +29,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         void ISourceGenerator.Initialize(GeneratorInitializationContext context)
         {
             //System.Diagnostics.Debugger.Launch();
-            context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
+            //context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
+          
             
         }
     }

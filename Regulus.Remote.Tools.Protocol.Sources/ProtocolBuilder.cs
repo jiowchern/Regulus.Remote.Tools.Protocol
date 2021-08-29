@@ -14,7 +14,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         public ProtocolBuilder(Compilation compilation, IReadOnlyCollection<GhostBuilder> ghosts)
         {
             
-            System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
+            /*System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
             var nameCode = ghosts.Aggregate("", (s, g) => s + g.Syntax.ToString());
             var code = md5.ComputeHash(System.Text.Encoding.ASCII.GetBytes(nameCode));
             Name = "C"+_BuildProtocolName(code);
@@ -51,7 +51,7 @@ public class {Name} : Regulus.Remote.IProtocol
 
     }}
 }}
-";
+";*/
 
         }
         private string _BuildProtocolName(byte[] code)

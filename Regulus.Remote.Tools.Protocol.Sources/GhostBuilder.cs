@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -6,38 +7,29 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
-    internal class GhostBuilder
+    public class GhostBuilder
     {
-        internal readonly string Name;
-        internal readonly SyntaxTree Syntax;
-        internal object Common;
-        internal object Protocol;
-        internal string[] Events;
+        
+        public readonly SyntaxTree[] Ghosts;
+   
 
-        public GhostBuilder(InterfaceDeclarationSyntax soul, SemanticModel model)
+        public static SyntaxTree CreateGhost(InterfaceDeclarationSyntax root)
         {
-            var soulInfo = model.GetDeclaredSymbol(soul);
-
-            var methods = (from m in soul.Members
-                            where m.IsKind(SyntaxKind.MethodDeclaration)
-                            select _BuildMethod(m as MethodDeclarationSyntax, model));
-
-            var propertys = (from m in soul.Members
-                           where m.IsKind(SyntaxKind.PropertyDeclaration)
-                           select _BuildProperty(m as PropertyDeclarationSyntax, model));
+            var extNamespace = "RegulusRemoteGhosts";
+            var nss = root.Ancestors().OfType<NamespaceDeclarationSyntax>().ToArray();
+            var ms = root.DescendantNodes().OfType<MethodDeclarationSyntax>().ToArray();
             
-            var events = (from m in soul.Members
-                             where m.IsKind(SyntaxKind.EventFieldDeclaration)
-                             select _BuildEvent(m as Microsoft.CodeAnalysis.CSharp.Syntax.EventFieldDeclarationSyntax, model));
-
-            Syntax = SyntaxFactory.ParseSyntaxTree($@"
-namespace {soulInfo.ContainingNamespace}.Ghosts
+            var namespaceDel = nss.Length == 1 ? $"{nss.Single().Name}." : "";
+            var className = $"C{root.Identifier}";
+            var fullName = $"{namespaceDel}{root.Identifier}";
+            var source = $@"
+namespace {namespaceDel}{extNamespace}
 {{
-    class C{soul.Identifier} : Regulus.Remote.IGhost , {soulInfo}
+    class {className} : Regulus.Remote.IGhost , {fullName}
     {{
         readonly bool _HaveReturn ;            
         readonly long _GhostId;
-        public C{soul.Identifier}(long id,bool have_return)
+        public {className}(long id,bool have_return)
         {{
             _GhostId = id;
             _HaveReturn = have_return;
@@ -79,15 +71,30 @@ namespace {soulInfo.ContainingNamespace}.Ghosts
             add {{ this._RemoveEventEvent += value; }}
             remove {{ this._RemoveEventEvent -= value; }}
         }}
-
-        {string.Join("\r\n", methods)}
-        {string.Join("\r\n", propertys)}
-        {string.Join("\r\n", events)}
-
     }}
 }}
-", null, "", System.Text.Encoding.UTF8);
-            Name = $"test-{soul.Identifier}.cs";
+";
+            string path = $"{fullName}.{extNamespace}.cs";
+            return SyntaxFactory.ParseSyntaxTree(source,null,path, System.Text.Encoding.UTF8);
+           
+        }
+
+        public GhostBuilder(IEnumerable<SyntaxTree> commons)
+        {
+
+            var ghosts = new System.Collections.Generic.List<SyntaxTree>();
+            foreach (var common in commons)
+            {
+                foreach (var interfaceDeclarationSyntax in common.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>())
+                {
+                   var ghost =  CreateGhost(interfaceDeclarationSyntax);
+                   ghosts.Add(ghost);
+                }
+            }
+
+            Ghosts = ghosts.ToArray();
+
+           
         }
 
         private string _BuildEvent(Microsoft.CodeAnalysis.CSharp.Syntax.EventFieldDeclarationSyntax event_field_declaration_syntax, SemanticModel model)
@@ -161,6 +168,7 @@ $@"
             return text;
         }
 
-      
+
+        
     }
 }

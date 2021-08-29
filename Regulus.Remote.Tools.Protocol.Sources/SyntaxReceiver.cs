@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
@@ -93,9 +94,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
         private GhostBuilder _BuildGhost(GeneratorSyntaxContext context)
         {
-            var node = context.Node as InterfaceDeclarationSyntax;
+            /*var node = context.Node as InterfaceDeclarationSyntax;
             var ghost = new GhostBuilder(node, context.SemanticModel);
-            return ghost;
+            return ghost;*/
+            throw new NotImplementedException();
         }
     }
 }
