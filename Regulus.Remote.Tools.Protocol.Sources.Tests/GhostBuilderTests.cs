@@ -184,5 +184,28 @@ namespace NS1{}
 
             await new GhostTest(syntaxBuilder.Tree).RunAsync();
         }
+
+        [Test]
+        public async Task TwoInterfaceTest()
+        {
+
+            var source = @"
+
+namespace NS1{}
+    public interface IA {
+      
+    }
+
+public interface IB {
+      
+    }
+
+";
+            var syntaxBuilder =
+                new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
+                    System.Text.Encoding.UTF8));
+
+            await new GhostTest(syntaxBuilder.Tree).RunAsync();
+        }
     }
 }

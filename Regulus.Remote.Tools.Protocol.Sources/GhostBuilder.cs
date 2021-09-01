@@ -14,19 +14,66 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     public class GhostBuilder
     {
         public readonly IReadOnlyCollection<SyntaxTree> Ghosts;
+        public readonly IReadOnlyCollection<SyntaxTree> Events;
         public GhostBuilder(Compilation compilation)
         {
-           
             var ghosts = 
                 from syntax in compilation.SyntaxTrees
                 let SemanticModel = compilation.GetSemanticModel(syntax)
                     from interfaceSyntax in syntax.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>()
                     select _BuildGhost(interfaceSyntax, SemanticModel);
-
-
-
             Ghosts= ghosts.ToArray();
 
+
+            var events =
+                from syntax in compilation.SyntaxTrees
+                let SemanticModel = compilation.GetSemanticModel(syntax)
+                from interfaceSyntax in syntax.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>()
+                from eventSyntax in interfaceSyntax.DescendantNodes().OfType<EventFieldDeclarationSyntax>()
+                select _BuildGhostEvent(eventSyntax, SemanticModel);
+            Events = events.ToArray();
+        }
+
+        private static SyntaxTree _BuildGhostEvent(EventFieldDeclarationSyntax eventSyntax, SemanticModel semanticModel)
+        {
+//             var source = $@"
+//     using System;  
+//     using System.Collections.Generic;
+//     
+//     namespace {nameSpace}.Invoker.{name} 
+//     {{ 
+//         public class {eventName} : Regulus.Remote.IEventProxyCreator
+//         {{
+//
+//             Type _Type;
+//             string _Name;
+//             
+//             public {eventName}()
+//             {{
+//                 _Name = ""{eventName}"";
+//                 _Type = typeof({type.FullName});                   
+//             
+//             }}
+//             Delegate Regulus.Remote.IEventProxyCreator.Create(long soul_id,int event_id,long handler_id, Regulus.Remote.InvokeEventCallabck invoke_Event)
+//             {{                
+//                 var closure = new Regulus.Remote.GenericEventClosure{_GetTypes(argTypes)}(soul_id , event_id ,handler_id, invoke_Event);                
+//                 return new Action{_GetTypes(argTypes)}(closure.Run);
+//             }}
+//         
+//
+//             Type Regulus.Remote.IEventProxyCreator.GetType()
+//             {{
+//                 return _Type;
+//             }}            
+//
+//             string Regulus.Remote.IEventProxyCreator.GetName()
+//             {{
+//                 return _Name;
+//             }}            
+//         }}
+//     }}
+//                 ";
+            throw new NotImplementedException();
         }
 
         private static SyntaxTree _BuildGhost(InterfaceDeclarationSyntax interface_syntax, SemanticModel semantic_model)
