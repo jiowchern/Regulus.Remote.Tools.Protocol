@@ -9,9 +9,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     {
         void ISourceGenerator.Execute(GeneratorExecutionContext context)
         {
-            var builder = new GhostBuilder(context.Compilation.SyntaxTrees);
-
-            foreach(var g in builder.Ghosts)
+            var builder = new GhostBuilder(context.Compilation);
+            
+            foreach (var g in builder.Ghosts)
             {
                
                 context.AddSource(g.FilePath, g.ToNormalizeWhitespace());

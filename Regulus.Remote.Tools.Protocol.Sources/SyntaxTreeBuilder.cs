@@ -22,14 +22,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         {
 
 
-            /*
-             *     .GetRoot()
-                .DescendantNodes()
-                .OfType<InterfaceDeclarationSyntax>()
-                .Select(interfaceDeclarationSyntax => semanticModel.GetDeclaredSymbol(interfaceDeclarationSyntax)))
-        .Where(symbol => predicate(symbol.ToDisplayString()))
-        .ToImmutableList();
-             */
+           
             var ids = from i in Tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>()
                     where i.Identifier.ToString() == name
                      select i;

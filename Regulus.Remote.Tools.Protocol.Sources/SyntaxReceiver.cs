@@ -9,8 +9,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 {
     public class SyntaxReceiver : ISyntaxContextReceiver
     {
-        private readonly List<GhostBuilder> _Ghosts;
-        internal readonly System.Collections.Generic.IReadOnlyCollection<GhostBuilder> Ghosts;
+        private readonly List<GhostBuilderOld> _Ghosts;
+        internal readonly System.Collections.Generic.IReadOnlyCollection<GhostBuilderOld> Ghosts;
 
         private readonly List<ProtocoNewlBuilder> _Protocols;
         internal readonly System.Collections.Generic.IReadOnlyCollection<ProtocoNewlBuilder> Protocols;
@@ -18,7 +18,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         private readonly System.Collections.Generic.HashSet<string> _SerializerTypes;
         public SyntaxReceiver()
         {
-            _Ghosts = new List<GhostBuilder>();
+            _Ghosts = new List<GhostBuilderOld>();
             Ghosts = _Ghosts;
             _Protocols = new List<ProtocoNewlBuilder>();
             _SerializerTypes = new HashSet<string>();
@@ -92,7 +92,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             return true;
         }
 
-        private GhostBuilder _BuildGhost(GeneratorSyntaxContext context)
+        private GhostBuilderOld _BuildGhost(GeneratorSyntaxContext context)
         {
             /*var node = context.Node as InterfaceDeclarationSyntax;
             var ghost = new GhostBuilder(node, context.SemanticModel);

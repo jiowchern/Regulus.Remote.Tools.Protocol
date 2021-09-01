@@ -11,7 +11,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
       
 
-        public ProtocolBuilder(Compilation compilation, IReadOnlyCollection<GhostBuilder> ghosts)
+        public ProtocolBuilder(Compilation compilation, IReadOnlyCollection<GhostBuilderOld> ghosts)
         {
             
             /*System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();

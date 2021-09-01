@@ -1,35 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
+    
+    using System.Linq;
+
+    
     public class GhostBuilder
     {
-        
-        public readonly SyntaxTree[] Ghosts;
-   
-
-        public static SyntaxTree CreateGhost(InterfaceDeclarationSyntax root)
+        public readonly IReadOnlyCollection<SyntaxTree> Ghosts;
+        public GhostBuilder(Compilation compilation)
         {
-            var extNamespace = "RegulusRemoteGhosts";
-            var nss = root.Ancestors().OfType<NamespaceDeclarationSyntax>().ToArray();
-            var ms = root.DescendantNodes().OfType<MethodDeclarationSyntax>().ToArray();
-            
-            var namespaceDel = nss.Length == 1 ? $"{nss.Single().Name}." : "";
-            var className = $"C{root.Identifier}";
-            var fullName = $"{namespaceDel}{root.Identifier}";
+           
+            var ghosts = 
+                from syntax in compilation.SyntaxTrees
+                let SemanticModel = compilation.GetSemanticModel(syntax)
+                    from interfaceSyntax in syntax.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>()
+                    select _BuildGhost(interfaceSyntax, SemanticModel);
+
+
+
+            Ghosts= ghosts.ToArray();
+
+        }
+
+        private static SyntaxTree _BuildGhost(InterfaceDeclarationSyntax interface_syntax, SemanticModel semantic_model)
+        {
+            INamedTypeSymbol interfaceSymbol = semantic_model.GetDeclaredSymbol(interface_syntax);
+            var typeName = interfaceSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat );
+            var fullName = interfaceSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat );
+
+            var namespaceName = _BuildNamesapceName(interface_syntax, semantic_model);
+
+
             var source = $@"
-namespace {namespaceDel}{extNamespace}
+namespace {namespaceName}RegulusRemoteGhosts
 {{
-    class {className} : Regulus.Remote.IGhost , {fullName}
+    class C{typeName} : Regulus.Remote.IGhost , {fullName}
     {{
         readonly bool _HaveReturn ;            
         readonly long _GhostId;
-        public {className}(long id,bool have_return)
+        public C{typeName}(long id,bool have_return)
         {{
             _GhostId = id;
             _HaveReturn = have_return;
@@ -71,40 +87,61 @@ namespace {namespaceDel}{extNamespace}
             add {{ this._RemoveEventEvent += value; }}
             remove {{ this._RemoveEventEvent -= value; }}
         }}
+        {_BuildMethods(interface_syntax, semantic_model)}
+        {_BuildEvents(interface_syntax, semantic_model)}
+        {_BuildPropertys(interface_syntax, semantic_model)}
     }}
 }}
 ";
-            string path = $"{fullName}.{extNamespace}.cs";
-            return SyntaxFactory.ParseSyntaxTree(source,null,path, System.Text.Encoding.UTF8);
-           
+
+            return SyntaxFactory.ParseSyntaxTree(source,null,$"{namespaceName}.{typeName}.RegulusRemoteGhosts.cs");
         }
 
-        public GhostBuilder(IEnumerable<SyntaxTree> commons)
+        private static string _BuildPropertys(InterfaceDeclarationSyntax root, SemanticModel semantic_model)
         {
+            var trees = from syntax in root.DescendantNodes().OfType<PropertyDeclarationSyntax>()
+                select _BuildProperty(syntax, semantic_model);
 
-            var ghosts = new System.Collections.Generic.List<SyntaxTree>();
-            foreach (var common in commons)
-            {
-                foreach (var interfaceDeclarationSyntax in common.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>())
-                {
-                   var ghost =  CreateGhost(interfaceDeclarationSyntax);
-                   ghosts.Add(ghost);
-                }
-            }
 
-            Ghosts = ghosts.ToArray();
+            return string.Join("\r\n", trees);
+        }
+        private static string _BuildProperty(PropertyDeclarationSyntax property_declaration_syntax, SemanticModel model)
+        {
+            var symbol = model.GetDeclaredSymbol(property_declaration_syntax);
+            var t = symbol.Type as INamedTypeSymbol;
+            var source =
+                $@"
+{t.ToDisplayString()} _{property_declaration_syntax.Identifier} = new {t.ToDisplayString()}();
+{t.ToDisplayString()} {symbol.ToDisplayString()} {{ get{{ return _{property_declaration_syntax.Identifier};}} }}
+";
+            return source;
+        }
+        private static string _BuildEvents(InterfaceDeclarationSyntax root, SemanticModel semantic_model)
+        {
+            var trees = from syntax in root.DescendantNodes().OfType<EventFieldDeclarationSyntax>()
+                select _BuildEvent(syntax, semantic_model);
 
-           
+
+            return string.Join("\r\n", trees);
         }
 
-        private string _BuildEvent(Microsoft.CodeAnalysis.CSharp.Syntax.EventFieldDeclarationSyntax event_field_declaration_syntax, SemanticModel model)
+        private static string _BuildMethods(InterfaceDeclarationSyntax root, SemanticModel semantic_model)
+        {
+            var trees = from syntax in root.DescendantNodes().OfType<MethodDeclarationSyntax>()
+                select _BuildMethod(syntax, semantic_model);
+
+            
+            return string.Join("\r\n", trees);
+        }
+
+        private static string _BuildEvent(Microsoft.CodeAnalysis.CSharp.Syntax.EventFieldDeclarationSyntax event_field_declaration_syntax, SemanticModel model)
         {
             var symbol = model.GetDeclaredSymbol(event_field_declaration_syntax.Parent as InterfaceDeclarationSyntax);
             var id = event_field_declaration_syntax.Declaration.Variables[0].Identifier;
 
-            
+
             var source =
-$@"
+                $@"
 Regulus.Remote.GhostEventHandler  _{id} = new Regulus.Remote.GhostEventHandler();
 event {event_field_declaration_syntax.Declaration.Type} {symbol.ToDisplayString()}.{id}
 {{
@@ -123,43 +160,52 @@ event {event_field_declaration_syntax.Declaration.Type} {symbol.ToDisplayString(
             return source;
         }
 
-        private string _BuildProperty(PropertyDeclarationSyntax property_declaration_syntax, SemanticModel model)
+        private static string _BuildMethod(MethodDeclarationSyntax method_declaration_syntax, SemanticModel semanticModel)
         {
-            var symbol = model.GetDeclaredSymbol(property_declaration_syntax);
-            var t = symbol.Type as INamedTypeSymbol;
-            var source = 
-$@"
-{t.ToDisplayString()} _{property_declaration_syntax.Identifier} = new {t.ToDisplayString()}();
-{t.ToDisplayString()} {symbol.ToDisplayString()} {{ get{{ return _{property_declaration_syntax.Identifier};}} }}
-";
-            return source;
-        }
-
-        private string _BuildMethod(MethodDeclarationSyntax method_declaration_syntax, SemanticModel model)
-        {
-            var symbol = model.GetDeclaredSymbol(method_declaration_syntax) ;
+           
+            var interfaceSyntax = method_declaration_syntax.Ancestors().OfType<InterfaceDeclarationSyntax>().Single();
+            var interfaceSymbol = semanticModel.GetDeclaredSymbol(interfaceSyntax);
+            var methodSymbol = semanticModel.GetDeclaredSymbol(method_declaration_syntax);
             
+            bool haveReturn = false;
             int idx = 0;
             var pl = (from p in method_declaration_syntax.ParameterList.Parameters
-                     select p.WithIdentifier(SyntaxFactory.Identifier($"_{idx++}"))).ToArray();
+                select p.WithIdentifier(SyntaxFactory.Identifier($"_{idx++}"))).ToArray();
             var method = SyntaxFactory.MethodDeclaration(method_declaration_syntax.ReturnType, method_declaration_syntax.Identifier);
             method = method.AddParameterListParameters(pl.ToArray());
-            method = method.WithExplicitInterfaceSpecifier(SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.IdentifierName(symbol.ReceiverType.ToString())));
+
+            
+            NameSyntax methodName = SyntaxFactory.ParseName(interfaceSymbol.ToDisplayString());
+            method = method.WithExplicitInterfaceSpecifier(SyntaxFactory.ExplicitInterfaceSpecifier(methodName));
 
             string retValue = "";
             string retRetValue = "";
             string retRetValueVar = "null";
-            if (!symbol.ReturnsVoid)
+           
+           
+            if (methodSymbol.ReturnType.SpecialType == SpecialType.System_Void)
             {
-                retValue = $"var returnValue = new {symbol.ReturnType}();";
+                 retValue = "";
+                 retRetValue = "";
+                 retRetValueVar = "null";
+            }
+            else if (semanticModel.Compilation.GetTypeByMetadataName("Regulus.Remote.Value`1") == methodSymbol.ReturnType.OriginalDefinition)
+            {
+                retValue = $"var returnValue = new {methodSymbol.ReturnType}();";
                 retRetValue = "return returnValue ;";
                 retRetValueVar = "returnValue";
             }
-
+            else
+            {
+                retValue = $"";
+                retRetValue = "throw new NotSupportedException() ;";
+                retRetValueVar = "null";
+            }
+          
             method = method.WithBody(SyntaxFactory.Block(SyntaxFactory.ParseStatement(
-$@"
+                $@"
     {retValue}
-        var info = typeof({symbol.ReceiverType}).GetMethod(""{method_declaration_syntax.Identifier}"");
+        var info = typeof({interfaceSymbol.ToDisplayString()}).GetMethod(""{method_declaration_syntax.Identifier}"");
         _CallMethodEvent(info , new object[] {{{string.Join(",", from p in pl select p.Identifier)}}} , {retRetValueVar});                    
     {retRetValue}
 ")));
@@ -168,7 +214,14 @@ $@"
             return text;
         }
 
-
-        
+        private static string _BuildNamesapceName(InterfaceDeclarationSyntax interface_syntax, SemanticModel semantic_model)
+        {
+            var namespaceSyntax = interface_syntax.Ancestors().OfType<NamespaceDeclarationSyntax>().FirstOrDefault();
+            if (namespaceSyntax == null)
+                return "";
+            var namespaceSymbol = semantic_model.GetDeclaredSymbol(namespaceSyntax);
+            var namespaceName = namespaceSymbol.ToDisplayString();
+            return namespaceName + ".";
+        }
     }
 }
