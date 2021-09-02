@@ -16,6 +16,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
     {
         private readonly SyntaxTree[] _Souls;
         private readonly SyntaxTree[] _Ghosts;
+        private readonly SyntaxTree[] _GhostEvents;
         private readonly SyntaxTree _Protocol;
 
         public GhostTest(params SyntaxTree[] souls)
@@ -29,10 +30,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
             };
             CSharpCompilation compilation =  CSharpCompilation.Create(assemblyName, souls, references) ;
 
-
-            _Ghosts = new GhostBuilder(compilation).Ghosts.ToArray();
-
-        //    _Protocol = new ProtocolBuilder(compilation).Tree;
+            var builder = new GhostBuilder(compilation);
+            _Ghosts = builder.Ghosts.ToArray();
+            _GhostEvents = builder.Events.ToArray();
+            //    _Protocol = new ProtocolBuilder(compilation).Tree;
         }
 
       
@@ -51,7 +52,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
             
             };
            // test.TestState.GeneratedSources.Add((typeof(SourceGenerator), _Protocol.FilePath, _Protocol.ToNormalizeWhitespace()));
-            foreach (var syntaxTree in _Ghosts)
+            foreach (var syntaxTree in _Ghosts.Union(_GhostEvents))
             {
                
                 test.TestState.GeneratedSources.Add((typeof(SourceGenerator), syntaxTree.FilePath, syntaxTree.ToNormalizeWhitespace()));

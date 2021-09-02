@@ -34,46 +34,76 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             Events = events.ToArray();
         }
 
-        private static SyntaxTree _BuildGhostEvent(EventFieldDeclarationSyntax eventSyntax, SemanticModel semanticModel)
+        private static SyntaxTree _BuildGhostEvent(EventFieldDeclarationSyntax event_syntax, SemanticModel semantic_model)
         {
-//             var source = $@"
-//     using System;  
-//     using System.Collections.Generic;
-//     
-//     namespace {nameSpace}.Invoker.{name} 
-//     {{ 
-//         public class {eventName} : Regulus.Remote.IEventProxyCreator
-//         {{
-//
-//             Type _Type;
-//             string _Name;
-//             
-//             public {eventName}()
-//             {{
-//                 _Name = ""{eventName}"";
-//                 _Type = typeof({type.FullName});                   
-//             
-//             }}
-//             Delegate Regulus.Remote.IEventProxyCreator.Create(long soul_id,int event_id,long handler_id, Regulus.Remote.InvokeEventCallabck invoke_Event)
-//             {{                
-//                 var closure = new Regulus.Remote.GenericEventClosure{_GetTypes(argTypes)}(soul_id , event_id ,handler_id, invoke_Event);                
-//                 return new Action{_GetTypes(argTypes)}(closure.Run);
-//             }}
-//         
-//
-//             Type Regulus.Remote.IEventProxyCreator.GetType()
-//             {{
-//                 return _Type;
-//             }}            
-//
-//             string Regulus.Remote.IEventProxyCreator.GetName()
-//             {{
-//                 return _Name;
-//             }}            
-//         }}
-//     }}
-//                 ";
-            throw new NotImplementedException();
+
+            string eventName = _BuildEventName(event_syntax);
+            var interfaceSyntax = event_syntax.Parent as InterfaceDeclarationSyntax;
+            
+            var namespaceName = _BuildNamesapceName(interfaceSyntax, semantic_model);
+            var fieldName = event_syntax.Declaration.Variables[0];
+            var interfaceSymbol = semantic_model.GetDeclaredSymbol(interfaceSyntax);
+            var eventSymbol =(interfaceSymbol.GetMembers(fieldName.ToString() ).Single() as IEventSymbol).Type as INamedTypeSymbol ;
+            var typeArgs = from typeArg in eventSymbol.TypeArguments
+                select typeArg.ToDisplayString();
+
+            var enumerable = typeArgs as string[] ?? typeArgs.ToArray();
+            var typeArgCode = $"<{string.Join(",", enumerable)}>";
+
+            if (!enumerable.Any())
+                typeArgCode = "";
+
+            var typeName = interfaceSymbol.ToDisplayString();
+
+                    var source = $@"
+            using System;  
+            
+            
+            namespace {namespaceName}
+            {{ 
+                public class {eventName} : Regulus.Remote.IEventProxyCreator
+                {{
+            
+                    Type _Type;
+                    string _Name;
+                    
+                    public {eventName}()
+                    {{
+                        _Name = ""{fieldName}"";
+                        _Type = typeof({typeName});                   
+                    
+                    }}
+                    Delegate Regulus.Remote.IEventProxyCreator.Create(long soul_id,int event_id,long handler_id, Regulus.Remote.InvokeEventCallabck invoke_Event)
+                    {{                
+                        var closure = new Regulus.Remote.GenericEventClosure{typeArgCode}(soul_id , event_id ,handler_id, invoke_Event);                
+                        return new Action{typeArgCode}(closure.Run);
+                    }}
+                
+            
+                    Type Regulus.Remote.IEventProxyCreator.GetType()
+                    {{
+                        return _Type;
+                    }}            
+            
+                    string Regulus.Remote.IEventProxyCreator.GetName()
+                    {{
+                        return _Name;
+                    }}            
+                }}
+            }}
+                        ";
+
+                    return SyntaxFactory.ParseSyntaxTree(source, null, $"{namespaceName}.{typeName}_{eventName}.RegulusRemoteGhosts.cs");
+
+          
+        }
+
+        private static string _BuildEventName(EventFieldDeclarationSyntax eventSyntax)
+        {
+            var eventName = string.Join("_", eventSyntax.Declaration.Variables);
+            var interfaceSyntax= eventSyntax.Parent as InterfaceDeclarationSyntax;
+            
+            return $"{interfaceSyntax.Identifier}_{eventName}";
         }
 
         private static SyntaxTree _BuildGhost(InterfaceDeclarationSyntax interface_syntax, SemanticModel semantic_model)
@@ -86,7 +116,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
 
             var source = $@"
-namespace {namespaceName}RegulusRemoteGhosts
+namespace {namespaceName}
 {{
     class C{typeName} : Regulus.Remote.IGhost , {fullName}
     {{
@@ -265,10 +295,10 @@ event {event_field_declaration_syntax.Declaration.Type} {symbol.ToDisplayString(
         {
             var namespaceSyntax = interface_syntax.Ancestors().OfType<NamespaceDeclarationSyntax>().FirstOrDefault();
             if (namespaceSyntax == null)
-                return "";
+                return "RegulusRemoteGhosts";
             var namespaceSymbol = semantic_model.GetDeclaredSymbol(namespaceSyntax);
             var namespaceName = namespaceSymbol.ToDisplayString();
-            return namespaceName + ".";
+            return namespaceName + ".RegulusRemoteGhosts";
         }
     }
 }

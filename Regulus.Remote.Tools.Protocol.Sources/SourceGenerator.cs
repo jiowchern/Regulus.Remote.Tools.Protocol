@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
@@ -15,7 +16,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
             var builder = new GhostBuilder(context.Compilation);
             
-            foreach (var g in builder.Ghosts)
+            foreach (var g in builder.Ghosts.Union(builder.Events))
             {
                 context.AddSource(g.FilePath, g.ToNormalizeWhitespace());
             }
