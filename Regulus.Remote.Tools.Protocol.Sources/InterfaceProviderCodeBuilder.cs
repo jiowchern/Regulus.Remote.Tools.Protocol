@@ -6,12 +6,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
-
-    class MemberMapCodeBuilder
-    {
-
-    }
-
     class InterfaceProviderCodeBuilder
     {
         public readonly string Code;

@@ -11,6 +11,33 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
     public class ProtocolBuilderTests
     {
         [Test]
+        public async Task MemberMapMethodCodeBuilderTest()
+        {
+            var source = @"
+public interface IA
+    {
+        Regulus.Remote.Value<int> Method1(int a1,int a2);
+    }
+namespace NS1
+{
+    
+    
+public interface IB
+    {
+        Regulus.Remote.Value<int> Method1(int a1,int a2);
+        Regulus.Remote.Value<int> Method2();
+    }
+}
+
+";
+            var tree = CSharpSyntaxTree.ParseText(source);
+            Compilation compilation = tree.Compilation();
+            //new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action<global::IA,int,int>>)((ins,_1,_2) => ins.Method(_1,_2))).Method,new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action<global::NS1.IB,int,int>>)((ins,_1,_2) => ins.Method(_1,_2))).Method
+            var builder = new MemberMapCodeBuilder(compilation);
+            NUnit.Framework.Assert.AreEqual("new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action<global::IA,int,int>>)((ins,_1,_2) => ins.Method1(_1,_2))).Method,new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action<global::NS1.IB,int,int>>)((ins,_1,_2) => ins.Method1(_1,_2))).Method,new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action<global::NS1.IB>>)((ins) => ins.Method2())).Method", builder.MethodInfosCode);
+        }
+
+        [Test]
         public async Task EventProviderCodeBuilderTest()
         {
 
