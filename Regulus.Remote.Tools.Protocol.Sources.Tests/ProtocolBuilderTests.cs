@@ -10,6 +10,58 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
     public class ProtocolBuilderTests
     {
+        [Test]
+        public async Task EventProviderCodeBuilderTest()
+        {
+
+            var source = @"
+public interface IA
+    {
+        event System.Action<int> Event1;
+        event System.Action Event2;
+    }
+namespace NS1
+{
+    
+    
+public interface IB
+    {
+        event System.Action<int> Event1;
+    }
+}
+
+";
+            var tree = CSharpSyntaxTree.ParseText(source);
+            Compilation compilation = tree.Compilation();
+
+            var interfaceMap = new EventProviderCodeBuilder(new GhostBuilder(compilation).Events);
+            NUnit.Framework.Assert.AreEqual("new global::RegulusRemoteGhosts.IA_Event1(),new global::RegulusRemoteGhosts.IA_Event2(),new global::NS1.RegulusRemoteGhosts.IB_Event1()", interfaceMap.Code);
+        }
+
+        [Test]
+        public async Task InterfaceProviderCodeBuilderTest()
+        {
+            var source = @"
+namespace NS1
+{
+    
+    public interface IA
+    {
+        
+    }
+public interface IB
+    {
+        
+    }
+}
+
+";
+            var tree = CSharpSyntaxTree.ParseText(source);
+            Compilation compilation = tree.Compilation();
+            
+            var interfaceMap = new InterfaceProviderCodeBuilder(new GhostBuilder(compilation).Ghosts);
+            NUnit.Framework.Assert.AreEqual("{typeof(global::NS1.IA),typeof(global::NS1.RegulusRemoteGhosts.CIA)},{typeof(global::NS1.IB),typeof(global::NS1.RegulusRemoteGhosts.CIB)}", interfaceMap.Code);
+        }
 
         [Test]
         public async Task SerializableExtractor3Test()

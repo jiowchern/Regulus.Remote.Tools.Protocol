@@ -1,7 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using System;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
@@ -10,11 +8,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
         public readonly SyntaxTree Tree;
        
-
-        public ProtocolBuilder(Compilation compilation)
+        
+        public ProtocolBuilder(Compilation compilation,GhostBuilder ghost_builder,SerializableExtractor extractor)
         {
-
-          
+            
+                      
         }
         private string _BuildProtocolName(byte[] code)
         {

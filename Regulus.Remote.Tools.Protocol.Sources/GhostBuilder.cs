@@ -10,7 +10,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     
     using System.Linq;
 
-    
+   
     public class GhostBuilder
     {
         public readonly IReadOnlyCollection<SyntaxTree> Ghosts;

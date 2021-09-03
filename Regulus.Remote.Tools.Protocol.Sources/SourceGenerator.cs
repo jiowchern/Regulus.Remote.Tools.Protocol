@@ -21,7 +21,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 context.AddSource(g.FilePath, g.ToNormalizeWhitespace());
             }
 
-            var protocol = new ProtocolBuilder(context.Compilation).Tree;
+            //var protocol = new ProtocolBuilder(context.Compilation).Tree;
 
            // context.AddSource(protocol.FilePath, protocol.ToNormalizeWhitespace());
             /*var builder = new ProtocolBuilder(context.Compilation ,receiver.Ghosts);
