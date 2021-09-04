@@ -10,6 +10,32 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
     public class ProtocolBuilderTests
     {
+
+        [Test]
+        public async Task MemberMapInterfaceCodeBuilderTest()
+        {
+            var source = @"
+public interface IA
+    {
+        
+    }
+namespace NS1
+{
+    
+    public class C1{}
+public interface IB
+    {
+       
+    }
+}
+
+";
+            var tree = CSharpSyntaxTree.ParseText(source);
+            Compilation compilation = tree.Compilation();
+
+            var builder = new MemberMapCodeBuilder(compilation);
+            NUnit.Framework.Assert.AreEqual(@"new System.Tuple<System.Type, System.Func<Regulus.Remote.IProvider>>(typeof(global::IA),()=>new Regulus.Remote.TProvider<global::IA>()),new System.Tuple<System.Type, System.Func<Regulus.Remote.IProvider>>(typeof(global::NS1.IB),()=>new Regulus.Remote.TProvider<global::NS1.IB>())", builder.InterfacesCode);
+        }
         [Test]
         public async Task MemberMapPropertyCodeBuilderTest()
         {

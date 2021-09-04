@@ -11,6 +11,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         public readonly string MethodInfosCode;
         public readonly string EventInfosCode;
         public readonly string PropertyInfosCode;
+        public readonly string InterfacesCode;
         public MemberMapCodeBuilder(Compilation compilation)
         {
             _Compilation = compilation;
@@ -18,26 +19,46 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             var methods = from tree in compilation.SyntaxTrees
                 from interfaceSyntax in tree.GetRoot().DescendantNodesAndSelf().OfType<InterfaceDeclarationSyntax>()
                 from methodSyntax in interfaceSyntax.DescendantNodes().OfType<MethodDeclarationSyntax>()
-                select _BuildMethodInfo(methodSyntax);
+                select _BuildCode(methodSyntax);
 
             MethodInfosCode = string.Join(",",methods);
 
             var events = from tree in compilation.SyntaxTrees
                 from interfaceSyntax in tree.GetRoot().DescendantNodesAndSelf().OfType<InterfaceDeclarationSyntax>()
                 from eventSyntax in interfaceSyntax.DescendantNodes().OfType<EventFieldDeclarationSyntax>()
-                select _BuildEventInfo(eventSyntax);
+                select _BuildCode(eventSyntax);
 
             EventInfosCode = string.Join(",", events);
 
             var propertys = from tree in compilation.SyntaxTrees
                 from interfaceSyntax in tree.GetRoot().DescendantNodesAndSelf().OfType<InterfaceDeclarationSyntax>()
                 from propertySyntax in interfaceSyntax.DescendantNodes().OfType<PropertyDeclarationSyntax>()
-                select _BuildPropertyInfo(propertySyntax);
+                select _BuildCode(propertySyntax);
 
             PropertyInfosCode = string.Join(",", propertys);
+
+
+            var interfaces = from tree in compilation.SyntaxTrees
+                from interfaceSyntax in tree.GetRoot().DescendantNodesAndSelf().OfType<InterfaceDeclarationSyntax>()
+                
+                select _BuildCode(interfaceSyntax);
+
+            InterfacesCode = string.Join(",", interfaces);
         }
 
-        private string _BuildPropertyInfo(PropertyDeclarationSyntax property_syntax)
+        private string _BuildCode(InterfaceDeclarationSyntax interface_syntax)
+        {
+
+            var model = _Compilation.GetSemanticModel(interface_syntax.SyntaxTree);
+            var interfaceSymbol = model.GetDeclaredSymbol(interface_syntax) ;
+            string typeName= interfaceSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            return
+                $@"new System.Tuple<System.Type, System.Func<Regulus.Remote.IProvider>>(typeof({typeName}),()=>new Regulus.Remote.TProvider<{typeName}>())";
+           
+        }
+
+
+        private string _BuildCode(PropertyDeclarationSyntax property_syntax)
         {
             var model = _Compilation.GetSemanticModel(property_syntax.SyntaxTree);
             var interfaceSymbol = model.GetDeclaredSymbol(property_syntax.Parent) as INamedTypeSymbol;
@@ -48,7 +69,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             return $@"typeof({typeName}).GetProperty(""{eventName}"")";
         }
 
-        private string _BuildEventInfo(EventFieldDeclarationSyntax event_syntax)
+        private string _BuildCode(EventFieldDeclarationSyntax event_syntax)
         {
 
             var model = _Compilation.GetSemanticModel(event_syntax.SyntaxTree);
@@ -62,7 +83,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         }
 
 
-        private string _BuildMethodInfo(MethodDeclarationSyntax method_syntax)
+        private string _BuildCode(MethodDeclarationSyntax method_syntax)
         {
             var model = _Compilation.GetSemanticModel(method_syntax.SyntaxTree);
             var methodSymbol = model.GetDeclaredSymbol(method_syntax) as IMethodSymbol;
