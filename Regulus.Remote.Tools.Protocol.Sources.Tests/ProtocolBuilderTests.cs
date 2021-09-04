@@ -10,6 +10,33 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
     public class ProtocolBuilderTests
     {
+       
+        [Test]
+        public async Task MemberMapEventCodeBuilderTest()
+        {
+            var source = @"
+public interface IA
+    {
+        event System.Action Event1;
+    }
+namespace NS1
+{
+    
+    public class C1{}
+public interface IB
+    {
+        event System.Action<C1,string> Event1;
+    }
+}
+
+";
+            var tree = CSharpSyntaxTree.ParseText(source);
+            Compilation compilation = tree.Compilation();
+
+            var builder = new MemberMapCodeBuilder(compilation);
+            NUnit.Framework.Assert.AreEqual(@"typeof(global::IA).GetEvent(""Event1""),typeof(global::NS1.IB).GetEvent(""Event1"")", builder.EventInfosCode);
+        }
+
         [Test]
         public async Task MemberMapMethodCodeBuilderTest()
         {
