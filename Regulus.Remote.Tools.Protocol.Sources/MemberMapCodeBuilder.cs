@@ -10,6 +10,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         private readonly Compilation _Compilation;
         public readonly string MethodInfosCode;
         public readonly string EventInfosCode;
+        public readonly string PropertyInfosCode;
         public MemberMapCodeBuilder(Compilation compilation)
         {
             _Compilation = compilation;
@@ -27,6 +28,24 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 select _BuildEventInfo(eventSyntax);
 
             EventInfosCode = string.Join(",", events);
+
+            var propertys = from tree in compilation.SyntaxTrees
+                from interfaceSyntax in tree.GetRoot().DescendantNodesAndSelf().OfType<InterfaceDeclarationSyntax>()
+                from propertySyntax in interfaceSyntax.DescendantNodes().OfType<PropertyDeclarationSyntax>()
+                select _BuildPropertyInfo(propertySyntax);
+
+            PropertyInfosCode = string.Join(",", propertys);
+        }
+
+        private string _BuildPropertyInfo(PropertyDeclarationSyntax property_syntax)
+        {
+            var model = _Compilation.GetSemanticModel(property_syntax.SyntaxTree);
+            var interfaceSymbol = model.GetDeclaredSymbol(property_syntax.Parent) as INamedTypeSymbol;
+
+
+            string typeName = interfaceSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat); ;
+            string eventName = property_syntax.Identifier.ToFullString();
+            return $@"typeof({typeName}).GetProperty(""{eventName}"")";
         }
 
         private string _BuildEventInfo(EventFieldDeclarationSyntax event_syntax)

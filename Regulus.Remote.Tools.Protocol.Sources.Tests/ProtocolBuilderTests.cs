@@ -10,7 +10,32 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
     public class ProtocolBuilderTests
     {
-       
+        [Test]
+        public async Task MemberMapPropertyCodeBuilderTest()
+        {
+            var source = @"
+public interface IA
+    {
+        Regulus.Remote.Property<int> Property1{get;}
+    }
+namespace NS1
+{
+    
+    public class C1{}
+public interface IB
+    {
+        Regulus.Remote.Notifier<int> Property1{get;}
+    }
+}
+
+";
+            var tree = CSharpSyntaxTree.ParseText(source);
+            Compilation compilation = tree.Compilation();
+
+            var builder = new MemberMapCodeBuilder(compilation);
+            NUnit.Framework.Assert.AreEqual(@"typeof(global::IA).GetProperty(""Property1""),typeof(global::NS1.IB).GetProperty(""Property1"")", builder.PropertyInfosCode);
+        }
+
         [Test]
         public async Task MemberMapEventCodeBuilderTest()
         {
