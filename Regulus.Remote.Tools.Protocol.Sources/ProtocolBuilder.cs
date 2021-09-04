@@ -43,7 +43,7 @@ public class {protocolName} : Regulus.Remote.IProtocol
     readonly System.Reflection.Assembly _Base;
     public {protocolName}()
     {{
-        _Base = System.Reflection.Assembly.Load(""Regulus.Projects.TestProtocol.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"");
+        _Base = System.Reflection.Assembly.Load(""{compilation.Assembly}"");
        
         _InterfaceProvider = new Regulus.Remote.InterfaceProvider(new Dictionary<Type, Type> (){{ {interface_provider_code_builder.Code}}});
      

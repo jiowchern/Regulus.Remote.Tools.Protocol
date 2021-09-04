@@ -22,7 +22,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
         {
 
             _Souls = souls;
-            var assemblyName = Guid.NewGuid().ToString();
+            var assemblyName = "TestProject";
             IEnumerable<MetadataReference> references = new MetadataReference[]
             {
                 MetadataReference.CreateFromFile(typeof(Regulus.Remote.Property<>).GetTypeInfo().Assembly.Location),
