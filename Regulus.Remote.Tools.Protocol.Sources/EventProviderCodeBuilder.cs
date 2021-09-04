@@ -8,7 +8,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     class EventProviderCodeBuilder
     {
         public readonly string Code;
-        public EventProviderCodeBuilder(IReadOnlyCollection<SyntaxTree> ghosts)
+        public EventProviderCodeBuilder(IEnumerable<SyntaxTree> ghosts)
         {
 
 

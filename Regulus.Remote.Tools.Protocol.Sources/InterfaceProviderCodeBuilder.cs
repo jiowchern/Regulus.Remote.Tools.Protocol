@@ -9,7 +9,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     class InterfaceProviderCodeBuilder
     {
         public readonly string Code;
-        public InterfaceProviderCodeBuilder(IReadOnlyCollection<SyntaxTree> ghosts)
+        public InterfaceProviderCodeBuilder(IEnumerable<SyntaxTree> ghosts)
         {
 
 

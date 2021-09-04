@@ -15,9 +15,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
     public class GhostTest
     {
         private readonly SyntaxTree[] _Souls;
-        private readonly SyntaxTree[] _Ghosts;
-        private readonly SyntaxTree[] _GhostEvents;
-        private readonly SyntaxTree _Protocol;
+      
+        private readonly IEnumerable<SyntaxTree> _Sources;
 
         public GhostTest(params SyntaxTree[] souls)
         {
@@ -26,14 +25,15 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
             var assemblyName = Guid.NewGuid().ToString();
             IEnumerable<MetadataReference> references = new MetadataReference[]
             {
-                MetadataReference.CreateFromFile(typeof(Regulus.Remote.Value<>).GetTypeInfo().Assembly.Location)
+                MetadataReference.CreateFromFile(typeof(Regulus.Remote.Property<>).GetTypeInfo().Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(Regulus.Remote.Value<>).GetTypeInfo().Assembly.Location),
+
             };
             CSharpCompilation compilation =  CSharpCompilation.Create(assemblyName, souls, references) ;
+            _Sources = new ProjectSourceBuilder(compilation).Sources;
 
-            var builder = new GhostBuilder(compilation);
-            _Ghosts = builder.Ghosts.ToArray();
-            _GhostEvents = builder.Events.ToArray();
-            //    _Protocol = new ProtocolBuilder(compilation).Tree;
+            
+         
         }
 
       
@@ -46,20 +46,23 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
                 TestState =
                 {
                     ReferenceAssemblies = ReferenceAssemblies.Default.AddPackages(ImmutableArray.Create(
-                        new PackageIdentity("Regulus.Remote.Protocol", "0.1.9.1"))),
+                        new PackageIdentity("Regulus.Remote.Protocol", "0.1.9.1"),
+                        new PackageIdentity("Regulus.Serialization", "0.1.9.1"))),
+                    
                 },
             
             
             };
-           // test.TestState.GeneratedSources.Add((typeof(SourceGenerator), _Protocol.FilePath, _Protocol.ToNormalizeWhitespace()));
-            foreach (var syntaxTree in _Ghosts.Union(_GhostEvents))
+           
+            foreach (var syntaxTree in _Sources)
             {
                
-                test.TestState.GeneratedSources.Add((typeof(SourceGenerator), syntaxTree.FilePath, syntaxTree.ToNormalizeWhitespace()));
+                test.TestState.GeneratedSources.Add((typeof(SourceGenerator), syntaxTree.FilePath, await syntaxTree.GetTextAsync( )));
             }
+          
             foreach (var syntaxTree in _Souls)
             {
-                test.TestState.Sources.Add(syntaxTree.ToNormalizeWhitespace());
+                test.TestState.Sources.Add(await syntaxTree.GetTextAsync( ));
             }
             
             await test.RunAsync();

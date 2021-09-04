@@ -10,9 +10,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     {
         public readonly IReadOnlyCollection<ITypeSymbol> Symbols;
         private readonly Compilation _Compilation;
+        private readonly INamedTypeSymbol _RegulusRemoteProperty;
+
         public SerializableExtractor(Compilation compilation)
         {
+            
             _Compilation = compilation;
+            _RegulusRemoteProperty = _Compilation.GetTypeByMetadataName("Regulus.Remote.Property`1");
 
             var symbols = 
                 from tree in compilation.SyntaxTrees
@@ -45,7 +49,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 let type = symbol.Type as INamedTypeSymbol
                 where type != null
                 where type != null
-                      && _Compilation.GetTypeByMetadataName("Regulus.Remote.Property`1") == type.OriginalDefinition
+                      && _RegulusRemoteProperty == type.OriginalDefinition
                 from arg in type.TypeArguments
 
                 select arg);

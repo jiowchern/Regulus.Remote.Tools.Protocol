@@ -1,11 +1,9 @@
-﻿using Microsoft.CodeAnalysis;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.CodeAnalysis;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
-
     public class ProjectSourceBuilder
     {
         public readonly IEnumerable<SyntaxTree> Sources;
@@ -21,34 +19,6 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             var protocol = new ProtocolBuilder(compilation, extractor, event_provider_code_builder, interface_provider_code_builder, membermap_code_builder).Tree;
 
             Sources = builder.Ghosts.Union(builder.Events).Union(new[] {protocol});
-        }
-    }
-    [Generator]
-    public class SourceGenerator : ISourceGenerator
-    {
-        void ISourceGenerator.Execute(GeneratorExecutionContext context)
-        {
-
-
-            Compilation compilation = context.Compilation;
-            var sources = new ProjectSourceBuilder(compilation).Sources;
-            
-            foreach (var syntaxTree in sources)
-            {
-                context.AddSource(syntaxTree.FilePath, syntaxTree.GetText());
-            }
-           
-            
-        }
-
-        
-
-        void ISourceGenerator.Initialize(GeneratorInitializationContext context)
-        {
-            //System.Diagnostics.Debugger.Launch();
-            //context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
-          
-            
         }
     }
 }

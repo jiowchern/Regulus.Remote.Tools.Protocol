@@ -12,8 +12,8 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.NUnit" Version="1.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="NUnit" Version="3.13.2" />
-    <PackageReference Include="Regulus.Remote.Protocol" Version="0.1.9.1" />
     <PackageReference Include="Regulus.Remote.Standalone" Version="0.1.9.1" />
+    <PackageReference Include="Regulus.Serialization" Version="0.1.9.1" />
   </ItemGroup>
 
   <ItemGroup>

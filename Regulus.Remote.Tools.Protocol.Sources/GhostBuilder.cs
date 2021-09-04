@@ -93,7 +93,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             }}
                         ";
 
-                    return SyntaxFactory.ParseSyntaxTree(source, null, $"{namespaceName}.{typeName}_{eventName}.RegulusRemoteGhosts.cs");
+                    return SyntaxFactory.ParseSyntaxTree(source, null, $"{namespaceName}.{typeName}_{eventName}.RegulusRemoteGhosts.cs",Encoding.UTF8);
 
           
         }
@@ -171,7 +171,7 @@ namespace {namespaceName}
 }}
 ";
 
-            return SyntaxFactory.ParseSyntaxTree(source,null,$"{namespaceName}.{typeName}.RegulusRemoteGhosts.cs");
+            return SyntaxFactory.ParseSyntaxTree(source,null,$"{namespaceName}.{typeName}.RegulusRemoteGhosts.cs", Encoding.UTF8);
         }
 
         private static string _BuildPropertys(InterfaceDeclarationSyntax root, SemanticModel semantic_model)

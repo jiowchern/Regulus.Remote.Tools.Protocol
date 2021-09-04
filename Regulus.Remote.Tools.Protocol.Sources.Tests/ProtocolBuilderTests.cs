@@ -12,6 +12,31 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
     {
 
         [Test]
+        public async Task ProtocolTest()
+        {
+            var source = @"
+public interface IA
+{
+    
+}
+namespace NS1
+{
+    
+    public class C1{}
+    public interface IB
+    {
+       
+    }
+}
+
+";
+            var tree = CSharpSyntaxTree.ParseText(source);
+           
+
+            await new GhostTest(tree).RunAsync();
+        }
+
+        [Test]
         public async Task MemberMapInterfaceCodeBuilderTest()
         {
             var source = @"
