@@ -10,6 +10,17 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
 
             public readonly NotifiableCollection<INumber> Numbers1;
             public readonly NotifiableCollection<INumber> Numbers2;
+
+            Value<int> IMultipleNotices.GetNumber1Count()
+            {
+                return Numbers1.Items.Count;
+            }
+
+            Value<int> IMultipleNotices.GetNumber2Count()
+            {
+                return Numbers2.Items.Count;
+            }
+
             Notifier<INumber> IMultipleNotices.Numbers1 => new Notifier<INumber>(Numbers1);
 
             Notifier<INumber> IMultipleNotices.Numbers2 => new Notifier<INumber>(Numbers2);

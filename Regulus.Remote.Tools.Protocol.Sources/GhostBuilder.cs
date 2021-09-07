@@ -188,7 +188,7 @@ namespace {namespaceName}
             var t = symbol.Type as INamedTypeSymbol;
             var source =
                 $@"
-{t.ToDisplayString()} _{property_declaration_syntax.Identifier} = new {t.ToDisplayString()}();
+public {t.ToDisplayString()} _{property_declaration_syntax.Identifier} = new {t.ToDisplayString()}();
 {t.ToDisplayString()} {symbol.ToDisplayString()} {{ get{{ return _{property_declaration_syntax.Identifier};}} }}
 ";
             return source;
@@ -219,7 +219,7 @@ namespace {namespaceName}
 
             var source =
                 $@"
-Regulus.Remote.GhostEventHandler  _{id} = new Regulus.Remote.GhostEventHandler();
+public Regulus.Remote.GhostEventHandler  _{id} = new Regulus.Remote.GhostEventHandler();
 event {event_field_declaration_syntax.Declaration.Type} {symbol.ToDisplayString()}.{id}
 {{
     add 

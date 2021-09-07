@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -21,9 +22,61 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             MemberMapCodeBuilder membermap_code_builder)
         {
 
+            /*
+            "typeof(Regulus.Remote.PackageProtocolSubmit)",
+            "typeof(Regulus.Remote.RequestPackage)",
+            "typeof(Regulus.Remote.ResponsePackage)",
+            "typeof(Regulus.Remote.PackageInvokeEvent)",
+            "typeof(Regulus.Remote.PackageErrorMethod)",
+            "typeof(Regulus.Remote.PackageReturnValue)",
+            "typeof(Regulus.Remote.PackageLoadSoulCompile)",
+            "typeof(Regulus.Remote.PackageLoadSoul)",
+            "typeof(Regulus.Remote.PackageUnloadSoul)",
+            "typeof(Regulus.Remote.PackageCallMethod)",
+            "typeof(Regulus.Remote.PackageRelease)",
+            "typeof(Regulus.Remote.PackageSetProperty)",
+            "typeof(Regulus.Remote.PackageSetPropertyDone)",
+            "typeof(Regulus.Remote.PackageAddEvent)",
+            "typeof(Regulus.Remote.PackageRemoveEvent)",
+            "typeof(Regulus.Remote.PackagePropertySoul)",   
+             */
 
-            
-            var serCode =string.Join(",", extractor.Symbols.Select(s => $"typeof({s.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)})"));
+
+            var defaultTypes = new string[]
+            {//typeof(Regulus.Remote.ClientToServerOpCode),typeof(Regulus.Remote.PackageAddEvent),typeof(Regulus.Remote.PackageCallMethod),typeof(Regulus.Remote.PackageErrorMethod),typeof(Regulus.Remote.PackageInvokeEvent),typeof(Regulus.Remote.PackageLoadSoul),typeof(Regulus.Remote.PackageLoadSoulCompile),typeof(Regulus.Remote.PackagePropertySoul),typeof(Regulus.Remote.PackageProtocolSubmit),typeof(Regulus.Remote.PackageRelease),typeof(Regulus.Remote.PackageRemoveEvent),typeof(Regulus.Remote.PackageReturnValue),typeof(Regulus.Remote.PackageSetProperty),typeof(Regulus.Remote.PackageSetPropertyDone),typeof(Regulus.Remote.PackageUnloadSoul),typeof(Regulus.Remote.RequestPackage),typeof(Regulus.Remote.ResponsePackage),typeof(Regulus.Remote.ServerToClientOpCode),typeof(System.Boolean),typeof(System.Byte[]),typeof(System.Byte[][]),typeof(System.Char),typeof(System.Char[]),typeof(System.Int32),typeof(System.Int64),typeof(System.String)
+                "typeof(Regulus.Remote.PackageProtocolSubmit)",
+                "typeof(Regulus.Remote.RequestPackage)",
+                "typeof(Regulus.Remote.ResponsePackage)",
+                "typeof(Regulus.Remote.PackageInvokeEvent)",
+                "typeof(Regulus.Remote.PackageErrorMethod)",
+                "typeof(Regulus.Remote.PackageReturnValue)",
+                "typeof(Regulus.Remote.PackageLoadSoulCompile)",
+                "typeof(Regulus.Remote.PackageLoadSoul)",
+                "typeof(Regulus.Remote.PackageUnloadSoul)",
+                "typeof(Regulus.Remote.PackageCallMethod)",
+                "typeof(Regulus.Remote.PackageRelease)",
+                "typeof(Regulus.Remote.PackageSetProperty)",
+                "typeof(Regulus.Remote.PackageSetPropertyDone)",
+                "typeof(Regulus.Remote.PackageAddEvent)",
+                "typeof(Regulus.Remote.PackageRemoveEvent)",
+                "typeof(Regulus.Remote.PackagePropertySoul)",
+                "typeof(byte)",
+                "typeof(byte[])",
+                "typeof(byte[][])",
+                "typeof(Regulus.Remote.ClientToServerOpCode)",
+                "typeof(Regulus.Remote.ServerToClientOpCode)",
+                "typeof(long)",
+                "typeof(int)",
+                "typeof(string)",
+                "typeof(bool)",
+                "typeof(char)",
+                "typeof(char[])"
+
+
+            };
+            var types = defaultTypes.Union(extractor.Symbols.Select(s =>
+                $"typeof({s.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)})"));
+            var serCode =string.Join(",", new HashSet<string>(types));
 
             var md5 = _BuildMd5(serCode + event_provider_code_builder.Code + interface_provider_code_builder.Code +membermap_code_builder.PropertyInfosCode + membermap_code_builder.EventInfosCode + membermap_code_builder.InterfacesCode + membermap_code_builder.MethodInfosCode);
 
@@ -46,8 +99,7 @@ public class {protocolName} : Regulus.Remote.IProtocol
         _Base = System.Reflection.Assembly.Load(""{compilation.Assembly}"");
        
         _InterfaceProvider = new Regulus.Remote.InterfaceProvider(new Dictionary<Type, Type> (){{ {interface_provider_code_builder.Code}}});
-     
-       
+   
         _EventProvider = new Regulus.Remote.EventProvider( new IEventProxyCreator[]{{ {event_provider_code_builder.Code} }});
         _Serializer = new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder({serCode}).Describers);
         _MemberMap = new Regulus.Remote.MemberMap(

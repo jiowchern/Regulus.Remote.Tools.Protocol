@@ -31,9 +31,6 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
             };
             CSharpCompilation compilation =  CSharpCompilation.Create(assemblyName, souls, references) ;
             _Sources = new ProjectSourceBuilder(compilation).Sources;
-
-            
-         
         }
 
       

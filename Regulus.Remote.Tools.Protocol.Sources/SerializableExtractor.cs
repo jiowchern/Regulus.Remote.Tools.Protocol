@@ -57,7 +57,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
         private IEnumerable<ITypeSymbol> _GetNameds(IEnumerable<ITypeSymbol> symbols)
         {
-            var nameds = symbols.OfType<INamedTypeSymbol>() ;
+            var nameds = symbols.OfType<INamedTypeSymbol>().Where(s=>!(s.IsGenericType || s.IsAbstract)) ;
             var arrays = symbols.OfType<IArrayTypeSymbol>();
             return nameds.Union(_GetNameds(arrays));
         }

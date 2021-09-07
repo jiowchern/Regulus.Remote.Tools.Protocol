@@ -65,7 +65,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
 
             string typeName = interfaceSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat); ;
-            string eventName = property_syntax.Identifier.ToFullString();
+            string eventName = property_syntax.Identifier.ToString() ;
             return $@"typeof({typeName}).GetProperty(""{eventName}"")";
         }
 

@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Remote.Tools.Protoc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Remote.Tools.Protocol.Sources.TestCommon", "Regulus.Remote.Tools.Protocol.Sources.TestCommon\Regulus.Remote.Tools.Protocol.Sources.TestCommon.csproj", "{3FF75425-FA01-431A-8DDA-B43CCF672FA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Remote.Tools.Protocol.Sources.Tests", "Regulus.Remote.Tools.Protocol.Sources.Tests\Regulus.Remote.Tools.Protocol.Sources.Tests.csproj", "{FFDB09CD-FF2C-4E5F-887D-82111F2BCA04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Remote.Tools.Protocol.Sources.Tests", "Regulus.Remote.Tools.Protocol.Sources.Tests\Regulus.Remote.Tools.Protocol.Sources.Tests.csproj", "{FFDB09CD-FF2C-4E5F-887D-82111F2BCA04}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests", "Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests\Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests.csproj", "{D68CF279-1F30-4F62-9E34-FE6AE33FCBB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,18 @@ Global
 		{FFDB09CD-FF2C-4E5F-887D-82111F2BCA04}.Release|x64.Build.0 = Release|Any CPU
 		{FFDB09CD-FF2C-4E5F-887D-82111F2BCA04}.Release|x86.ActiveCfg = Release|Any CPU
 		{FFDB09CD-FF2C-4E5F-887D-82111F2BCA04}.Release|x86.Build.0 = Release|Any CPU
+		{D68CF279-1F30-4F62-9E34-FE6AE33FCBB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D68CF279-1F30-4F62-9E34-FE6AE33FCBB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D68CF279-1F30-4F62-9E34-FE6AE33FCBB7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D68CF279-1F30-4F62-9E34-FE6AE33FCBB7}.Debug|x64.Build.0 = Debug|Any CPU
+		{D68CF279-1F30-4F62-9E34-FE6AE33FCBB7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D68CF279-1F30-4F62-9E34-FE6AE33FCBB7}.Debug|x86.Build.0 = Debug|Any CPU
+		{D68CF279-1F30-4F62-9E34-FE6AE33FCBB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D68CF279-1F30-4F62-9E34-FE6AE33FCBB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D68CF279-1F30-4F62-9E34-FE6AE33FCBB7}.Release|x64.ActiveCfg = Release|Any CPU
+		{D68CF279-1F30-4F62-9E34-FE6AE33FCBB7}.Release|x64.Build.0 = Release|Any CPU
+		{D68CF279-1F30-4F62-9E34-FE6AE33FCBB7}.Release|x86.ActiveCfg = Release|Any CPU
+		{D68CF279-1F30-4F62-9E34-FE6AE33FCBB7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
