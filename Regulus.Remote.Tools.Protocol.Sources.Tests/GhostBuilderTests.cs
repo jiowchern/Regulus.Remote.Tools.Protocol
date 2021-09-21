@@ -11,6 +11,84 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
     public class GhostBuilderTests
     {
         [Test]
+        public async Task InterfaceInheritMethodTest()
+        {
+            var source = @"
+
+namespace NS1
+{
+    public interface IB {
+      void Method1();
+    }
+    namespace NS2
+    {
+        public interface IA : IB {
+          void Method1();
+        }
+    }
+    
+}
+";
+            var syntaxBuilder =
+                new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
+                    System.Text.Encoding.UTF8));
+
+            await new GhostTest(syntaxBuilder.Tree).RunAsync();
+        }
+        [Test]
+        public async Task InterfaceInheritEventTest()
+        {
+            var source = @"
+
+namespace NS1
+{
+    public interface IB {
+        event System.Action<string> Event1;
+    }
+    namespace NS2
+    {
+        public interface IA : IB {
+          event System.Action<string> Event1;
+        }
+    }
+    
+}
+";
+            var syntaxBuilder =
+                new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
+                    System.Text.Encoding.UTF8));
+
+            await new GhostTest(syntaxBuilder.Tree).RunAsync();
+        }
+        [Test]
+        public async Task InterfaceInheritPropertyTest()
+        {
+            var source = @"
+
+namespace NS1
+{
+    public interface IB {
+        Regulus.Remote.Property<int> Property1{get;}
+        Regulus.Remote.Notifier<NS2.IA> Property2{get;}
+    }
+    namespace NS2
+    {
+        public interface IA : IB {
+            Regulus.Remote.Property<int> Property1{get;}
+            Regulus.Remote.Notifier<NS2.IA> Property2{get;}
+        }
+    }
+    
+}
+";
+            var syntaxBuilder =
+                new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
+                    System.Text.Encoding.UTF8));
+
+            await new GhostTest(syntaxBuilder.Tree).RunAsync();
+        }
+
+        [Test]
         public async Task InterfaceTest()
         {
             var source = @"
