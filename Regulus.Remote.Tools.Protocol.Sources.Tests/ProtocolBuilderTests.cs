@@ -82,23 +82,53 @@ public interface IB
             var builder = new MemberMapCodeBuilder(compilation);
             NUnit.Framework.Assert.AreEqual(@"new System.Tuple<System.Type, System.Func<Regulus.Remote.IProvider>>(typeof(global::IA),()=>new Regulus.Remote.TProvider<global::IA>()),new System.Tuple<System.Type, System.Func<Regulus.Remote.IProvider>>(typeof(global::NS1.IB),()=>new Regulus.Remote.TProvider<global::NS1.IB>())", builder.InterfacesCode);
         }
+
+        [Test]
+        public async Task MemberMapPropertyNotifierCodeBuilderTest()
+        {
+            var source = @"
+    
+    namespace NS1
+    {
+        
+        
+    
+        
+        public interface IB
+        {
+            Regulus.Remote.Property<IB> Property1{get;}
+        }
+    }
+
+";
+            var tree = CSharpSyntaxTree.ParseText(source);
+            Compilation compilation = tree.Compilation();
+
+            var builder = new MemberMapCodeBuilder(compilation);
+            NUnit.Framework.Assert.AreEqual(@"typeof(global::NS1.IB).GetProperty(""Property1"")", builder.PropertyInfosCode);
+        }
+
         [Test]
         public async Task MemberMapPropertyCodeBuilderTest()
         {
             var source = @"
-public interface IA
+    public interface IA
     {
         Regulus.Remote.Property<int> Property1{get;}
     }
-namespace NS1
-{
-    
-    public class C1{}
-public interface IB
+    namespace NS1
     {
-        Regulus.Remote.Notifier<int> Property1{get;}
+        
+        
+        public class C1
+        {
+        }
+        
+        public interface IB
+        {
+            Regulus.Remote.Property<C1> Property1{get;}
+        }
     }
-}
 
 ";
             var tree = CSharpSyntaxTree.ParseText(source);
@@ -192,19 +222,19 @@ public interface IB
         [Test]
         public async Task InterfaceProviderCodeBuilderTest()
         {
-            var source = @"
+            var source = $@"
 namespace NS1
-{
+{{
     
     public interface IA
-    {
-        
-    }
-public interface IB
-    {
-        
-    }
-}
+    {{
+    }}
+
+    public interface IB
+    {{
+        Regulus.Remote.Property<IA> Property1 {{ get; }}
+    }}
+}}
 
 ";
             var tree = CSharpSyntaxTree.ParseText(source);

@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using System;
+using System.Diagnostics;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
@@ -25,10 +26,14 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
         void ISourceGenerator.Initialize(GeneratorInitializationContext context)
         {
-            //System.Diagnostics.Debugger.Launch();
-            //context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
-          
-            
+
+// #if DEBUG
+//             if (!Debugger.IsAttached)
+//             {
+//                 Debugger.Launch();
+//             }
+// #endif
+
         }
     }
 }

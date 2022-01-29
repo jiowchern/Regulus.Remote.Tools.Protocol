@@ -11,12 +11,33 @@
     <PackageReference Include="NUnit" Version="3.13.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
     <PackageReference Include="coverlet.collector" Version="3.0.2" />
-    <PackageReference Include="Regulus.Remote.Standalone" Version="0.1.9.1" />
+    <!--<PackageReference Include="Regulus.Remote.Standalone" Version="0.1.9.1" />-->
     <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Regulus.Remote.Tools.Protocol.Sources.TestCommon\Regulus.Remote.Tools.Protocol.Sources.TestCommon.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Regulus.Network">
+      <HintPath>..\..\Regulus.Remote\Regulus.Remote.Standalone\bin\Debug\netstandard2.0\Regulus.Network.dll</HintPath>
+    </Reference>
+    <Reference Include="Regulus.Remote">
+      <HintPath>..\..\Regulus.Remote\Regulus.Remote.Standalone\bin\Debug\netstandard2.0\Regulus.Remote.dll</HintPath>
+    </Reference>
+    <Reference Include="Regulus.Remote.Ghost">
+      <HintPath>..\..\Regulus.Remote\Regulus.Remote.Standalone\bin\Debug\netstandard2.0\Regulus.Remote.Ghost.dll</HintPath>
+    </Reference>
+    <Reference Include="Regulus.Remote.Soul">
+      <HintPath>..\..\Regulus.Remote\Regulus.Remote.Standalone\bin\Debug\netstandard2.0\Regulus.Remote.Soul.dll</HintPath>
+    </Reference>
+    <Reference Include="Regulus.Remote.Standalone">
+      <HintPath>..\..\Regulus.Remote\Regulus.Remote.Standalone\bin\Debug\netstandard2.0\Regulus.Remote.Standalone.dll</HintPath>
+    </Reference>
+    <Reference Include="Regulus.Utility">
+      <HintPath>..\..\Regulus.Remote\Regulus.Remote.Standalone\bin\Debug\netstandard2.0\Regulus.Utility.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

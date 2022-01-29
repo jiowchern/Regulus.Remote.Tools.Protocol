@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
@@ -22,10 +23,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
            
             var multipleNotices = new MultipleNotices.MultipleNotices();
 
-            var env = new TestEnv<Entry<IMultipleNotices>>(new Entry<IMultipleNotices>(multipleNotices));
+            var env = new TestEnv<Entry<IMultipleNotices>, IMultipleNotices>(new Entry<IMultipleNotices>(multipleNotices));
 
             var n1 = new Regulus.Remote.Tools.Protocol.Sources.TestCommon.Number(1);
 
+            
             multipleNotices.Numbers1.Items.Add(n1);
             multipleNotices.Numbers1.Items.Add(n1);
             multipleNotices.Numbers2.Items.Add(n1);
@@ -46,19 +48,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
                                 from n in mn.Numbers2.Base.UnsupplyEvent()
                                 select n.Value.Value;
 
+            var num1s = supplyn1Obs.Buffer(2).FirstAsync().Wait();
+            var num2s = supplyn2Obs.Buffer(1).FirstAsync().Wait();
 
-            var num1s =  supplyn1Obs.Buffer(2).FirstAsync().Wait();
-            var num2s =  supplyn2Obs.Buffer(1).FirstAsync().Wait();
-
-
-            
             NUnit.Framework.Assert.AreEqual(1, num1s[0]);
             NUnit.Framework.Assert.AreEqual(1, num1s[1]);
             NUnit.Framework.Assert.AreEqual(1, num2s[0]);
-
-
-
-
+        
             var removeNums = new System.Collections.Generic.List<int>();
 
             unsupplyn1Obs.Subscribe(removeNums.Add);

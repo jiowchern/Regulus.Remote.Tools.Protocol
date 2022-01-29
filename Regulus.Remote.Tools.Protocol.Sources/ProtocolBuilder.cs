@@ -42,7 +42,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
              */
 
 
-            var defaultTypes = new string[]
+            var essentialTypes = new string[]
             {//typeof(Regulus.Remote.ClientToServerOpCode),typeof(Regulus.Remote.PackageAddEvent),typeof(Regulus.Remote.PackageCallMethod),typeof(Regulus.Remote.PackageErrorMethod),typeof(Regulus.Remote.PackageInvokeEvent),typeof(Regulus.Remote.PackageLoadSoul),typeof(Regulus.Remote.PackageLoadSoulCompile),typeof(Regulus.Remote.PackagePropertySoul),typeof(Regulus.Remote.PackageProtocolSubmit),typeof(Regulus.Remote.PackageRelease),typeof(Regulus.Remote.PackageRemoveEvent),typeof(Regulus.Remote.PackageReturnValue),typeof(Regulus.Remote.PackageSetProperty),typeof(Regulus.Remote.PackageSetPropertyDone),typeof(Regulus.Remote.PackageUnloadSoul),typeof(Regulus.Remote.RequestPackage),typeof(Regulus.Remote.ResponsePackage),typeof(Regulus.Remote.ServerToClientOpCode),typeof(System.Boolean),typeof(System.Byte[]),typeof(System.Byte[][]),typeof(System.Char),typeof(System.Char[]),typeof(System.Int32),typeof(System.Int64),typeof(System.String)
                 "typeof(Regulus.Remote.PackageProtocolSubmit)",
                 "typeof(Regulus.Remote.RequestPackage)",
@@ -74,7 +74,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
 
             };
-            var types = defaultTypes.Union(extractor.Symbols.Select(s =>
+            var types = essentialTypes.Union(extractor.Symbols.Select(s =>
                 $"typeof({s.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)})"));
             var serCode =string.Join(",", new HashSet<string>(types));
 

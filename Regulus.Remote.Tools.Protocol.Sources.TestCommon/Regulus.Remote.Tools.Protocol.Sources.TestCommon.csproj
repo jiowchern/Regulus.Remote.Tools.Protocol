@@ -6,12 +6,28 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
-    <PackageReference Include="Regulus.Remote" Version="0.1.9.1" />
-    <PackageReference Include="Regulus.Serialization" Version="0.1.9.1" />
+    
+    <!-- <PackageReference Include="Regulus.Remote" Version="0.1.9.1" />
+    <PackageReference Include="Regulus.Serialization" Version="0.1.9.1" />-->
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Regulus.Remote.Tools.Protocol.Sources\Regulus.Remote.Tools.Protocol.Sources.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Regulus.Network">
+      <HintPath>..\..\Regulus.Remote\Regulus.Remote\bin\Debug\netstandard2.0\Regulus.Network.dll</HintPath>
+    </Reference>
+    <Reference Include="Regulus.Remote">
+      <HintPath>..\..\Regulus.Remote\Regulus.Remote\bin\Debug\netstandard2.0\Regulus.Remote.dll</HintPath>
+    </Reference>
+    <Reference Include="Regulus.Serialization">
+      <HintPath>..\..\Regulus.Remote\Regulus.Serialization\bin\Debug\netstandard2.0\Regulus.Serialization.dll</HintPath>
+    </Reference>
+    <Reference Include="Regulus.Utility">
+      <HintPath>..\..\Regulus.Remote\Regulus.Serialization\bin\Debug\netstandard2.0\Regulus.Utility.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

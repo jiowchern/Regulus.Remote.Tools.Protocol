@@ -188,6 +188,7 @@ namespace {namespaceName}
 
         private static string _BuildProperty(IPropertySymbol symbol, SemanticModel model)
         {
+
             var fieldName = symbol.ToDisplayString().Replace('.', '_');
             var t = symbol.Type as INamedTypeSymbol;
             var source =
