@@ -33,5 +33,16 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         {
             return Observable.FromEvent<Action<T>, T>(h => notifier.Unsupply += h, h => notifier.Unsupply -= h);
         }
+
+        public static IObservable<T> EventObservable<T>(System.Action<System.Action<T>> add_handler , System.Action<System.Action<T>> remove_handler )
+        {
+            return Observable.FromEvent<Action<T>, T>(add_handler , remove_handler);
+        }
+
+        public static IObservable<System.Reactive.Unit> EventObservable(System.Action<System.Action> add_handler, System.Action<System.Action> remove_handler)
+        {
+            return Observable.FromEvent(add_handler, remove_handler);
+        }
+
     }
 }

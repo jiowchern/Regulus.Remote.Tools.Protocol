@@ -27,12 +27,12 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         void ISourceGenerator.Initialize(GeneratorInitializationContext context)
         {
 
-// #if DEBUG
-//             if (!Debugger.IsAttached)
-//             {
-//                 Debugger.Launch();
-//             }
-// #endif
+ #if DEBUG
+             if (!Debugger.IsAttached)
+             {
+                 //Debugger.Launch();
+             }
+ #endif
 
         }
     }

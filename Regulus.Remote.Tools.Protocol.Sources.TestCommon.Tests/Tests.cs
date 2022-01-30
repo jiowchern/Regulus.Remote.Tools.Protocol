@@ -16,7 +16,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
         }
         [Test]
-        public void TestSupplyAndUnsupply()
+        public void SupplyAndUnsupplyTest()
         {
             var multipleNotices = new MultipleNotices.MultipleNotices();
 
@@ -84,7 +84,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             env.Dispose();
         }
         [Test]
-        public void TestSupply()
+        public void SupplyTest()
         {
 
            
@@ -158,6 +158,71 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
 
             env.Dispose();
+        }
+
+        [Test]
+        public void EventTest()
+        {
+            var tester = new EventTester();
+
+            var re = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
+            var env = new TestEnv<Entry<IEventabe>, IEventabe>(new Entry<IEventabe>(tester));
+
+
+
+          var event11Obs = from eventer in env.Queryable.QueryNotifier<IEventabe>().SupplyEvent()
+                             from n in NotifierReactive.EventObservable(NewMethod(eventer), (h) => eventer.Event1 -= h)
+                             select n;
+            var event12Obs = from eventer in env.Queryable.QueryNotifier<IEventabe>().SupplyEvent()
+                             from n in NotifierReactive.EventObservable((h) => eventer.Event21 += h, (h) => eventer.Event21 -= h)
+                             select n;
+
+            var event21Obs = from eventer in env.Queryable.QueryNotifier<IEventabe>().SupplyEvent()
+                             from n in NotifierReactive.EventObservable<int>((h) => eventer.Event2 += h, (h) => eventer.Event2 -= h)
+                             select n;
+            var event22Obs = from eventer in env.Queryable.QueryNotifier<IEventabe>().SupplyEvent()
+                             from n in NotifierReactive.EventObservable<int>(
+                                 (h) => eventer.Event22 += h,
+                                 (h) => eventer.Event22 -= h)
+                             select n;
+
+            var vals = new System.Collections.Generic.List<int>();
+            event11Obs.Subscribe((unit) => vals.Add(1));
+            event12Obs.Subscribe((unit) => vals.Add(2));
+            event21Obs.Subscribe(vals.Add);
+            event22Obs.Subscribe(vals.Add);
+
+            while (tester.LisCount < 4)
+            {
+                re.Operate();
+            }
+
+            tester.Invoke22(9);
+            tester.Invoke21();
+            tester.Invoke11();
+            tester.Invoke12(8);
+
+
+
+            while (vals.Count < 4)
+            {
+                re.Operate();
+            }
+
+            env.Dispose();
+
+            NUnit.Framework.Assert.AreEqual(9, vals[0]);
+            NUnit.Framework.Assert.AreEqual(2, vals[1]);
+            NUnit.Framework.Assert.AreEqual(1, vals[2]);
+            NUnit.Framework.Assert.AreEqual(8, vals[3]);
+
+
+        }
+
+        private static Action<Action> NewMethod(IEventabe eventer)
+        {
+            return (h) => { 
+                eventer.Event1 += h; };
         }
     }
 }

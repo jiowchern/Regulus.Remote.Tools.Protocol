@@ -245,6 +245,36 @@ namespace NS1
         }
 
         [Test]
+        public async Task InterfaceInheritanceProviderCodeBuilderTest()
+        {
+            var source = $@"
+namespace NS1
+{{
+    
+    public interface IC
+    {{
+d
+    }}
+    public interface IA : IC
+    {{
+d
+    }}
+
+    public interface IB : IA
+    {{
+        Regulus.Remote.Property<IA> Property1 {{ get; }}
+    }}
+}}
+
+";
+            var tree = CSharpSyntaxTree.ParseText(source);
+            Compilation compilation = tree.Compilation();
+
+            var interfaceMap = new InterfaceProviderCodeBuilder(new GhostBuilder(compilation).Ghosts);
+            NUnit.Framework.Assert.AreEqual("{typeof(global::NS1.IC),typeof(global::NS1.RegulusRemoteGhosts.CIC)},{typeof(global::NS1.IA),typeof(global::NS1.RegulusRemoteGhosts.CIA)},{typeof(global::NS1.IB),typeof(global::NS1.RegulusRemoteGhosts.CIB)}", interfaceMap.Code);
+        }
+
+        [Test]
         public async Task SerializableExtractor3Test()
         {
             var source = @"

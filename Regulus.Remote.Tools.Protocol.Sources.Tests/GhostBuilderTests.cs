@@ -42,7 +42,10 @@ namespace NS1
 
 namespace NS1
 {
-    public interface IB {
+    public interface IC {
+        event System.Action<string> Event1;
+    }
+    public interface IB : IC{
         event System.Action<string> Event1;
     }
     namespace NS2

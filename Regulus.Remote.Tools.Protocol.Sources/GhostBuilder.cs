@@ -107,12 +107,14 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             return $"{interfaceSyntax.Identifier}_{eventName}";
         }
 
+        
+
         private static SyntaxTree _BuildGhost(InterfaceDeclarationSyntax interface_syntax, SemanticModel semantic_model)
         {
             INamedTypeSymbol interfaceSymbol = semantic_model.GetDeclaredSymbol(interface_syntax);
-            var typeName = interfaceSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat );
+            var typeName = interfaceSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
 
-            var interfaceSymbols = interfaceSymbol.Interfaces.Union(new[] { interfaceSymbol });
+            var interfaceSymbols = GetInterfaceSymbols(interfaceSymbol).ToArray();
             var fulNames = from i in interfaceSymbols select i.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
             var namespaceName = _BuildNamesapceName(interface_syntax, semantic_model);
@@ -121,7 +123,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             var source = $@"
 namespace {namespaceName}
 {{
-    class C{typeName} : Regulus.Remote.IGhost , {string.Join(",",fulNames)}
+    class C{typeName} : Regulus.Remote.IGhost , {string.Join(",", fulNames)}
     {{
         readonly bool _HaveReturn ;            
         readonly long _GhostId;
@@ -174,7 +176,19 @@ namespace {namespaceName}
 }}
 ";
 
-            return SyntaxFactory.ParseSyntaxTree(source,null,$"{namespaceName}.{typeName}.RegulusRemoteGhosts.cs", Encoding.UTF8);
+            return SyntaxFactory.ParseSyntaxTree(source, null, $"{namespaceName}.{typeName}.RegulusRemoteGhosts.cs", Encoding.UTF8);
+        }
+
+        private static IEnumerable<INamedTypeSymbol> GetInterfaceSymbols(INamedTypeSymbol interfaceSymbol)
+        {
+            foreach(var i in interfaceSymbol.Interfaces)
+            {
+                foreach(var i2 in GetInterfaceSymbols(i))
+                {
+                    yield return i2;
+                }                
+            }
+            yield return interfaceSymbol;
         }
 
         private static string _BuildPropertys(IEnumerable<INamedTypeSymbol> interface_symbols, SemanticModel semantic_model)
